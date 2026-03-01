@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OSINT MEGA HUB | Дорки • Инструменты • Термины</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0a0c0f;
+            color: #e0e0e0;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        
+        /* Анимированный фон */
+        #particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: radial-gradient(circle at 20% 30%, #1a1f2a, #0a0c0f);
+        }
+        
+        /* Навигационная панель */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 1rem 2rem;
+            background: rgba(10, 12, 15, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(0, 255, 157, 0.1);
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #00ff9d, #00b8ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+        
+        .nav-links a {
+            color: #e0e0e0;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+            position: relative;
+        }
+        
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: #00ff9d;
+            transition: width 0.3s;
+        }
+        
+        .nav-links a:hover {
+            color: #00ff9d;
+        }
+        
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+        
+        .menu-btn {
+            display: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #00ff9d;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 80px auto 0;
+            padding: 2rem;
+            position: relative;
+            z-index: 1;
+        }
+        
+        /* Хедер */
+        header {
+            text-align: center;
+            padding: 4rem 0 3rem;
+            animation: fadeIn 1.5s ease;
+        }
+        
+        h1 {
+            font-size: 4rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #00ff9d, #00b8ff, #ff00c8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+        }
+        
+        .subtitle {
+            font-size: 1.3rem;
+            color: #888;
+            letter-spacing: 2px;
+        }
+        
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            margin: 2rem 0;
+            flex-wrap: wrap;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: #00ff9d;
+        }
+        
+        .stat-label {
+            color: #666;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+        }
+        
+        /* Категории */
+        .categories {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin: 2rem 0;
+        }
+        
+        .category-btn {
+            padding: 0.8rem 1.5rem;
+            background: rgba(20, 25, 35, 0.8);
+            border: 1px solid rgba(0, 255, 157, 0.2);
+            border-radius: 30px;
+            color: #e0e0e0;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+        
+        .category-btn:hover,
+        .category-btn.active {
+            background: #00ff9d;
+            color: #0a0c0f;
+            border-color: #00ff9d;
+            box-shadow: 0 0 20px rgba(0, 255, 157, 0.3);
+        }
+        
+        /* Поиск */
+        .search-box {
+            margin: 2rem 0;
+            position: relative;
+        }
+        
+        .search-box input {
+            width: 100%;
+            padding: 1.2rem 2rem;
+            background: rgba(20, 25, 35, 0.8);
+            border: 1px solid rgba(0, 255, 157, 0.2);
+            border-radius: 50px;
+            color: #e0e0e0;
+            font-size: 1.1rem;
+            transition: all 0.3s;
+        }
+        
+        .search-box input:focus {
+            outline: none;
+            border-color: #00ff9d;
+            box-shadow: 0 0 20px rgba(0, 255, 157, 0.2);
+        }
+        
+        .search-box input::placeholder {
+            color: #666;
+        }
+        
+        /* Сетка */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+        
+        .card {
+            background: rgba(20, 25, 35, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 255, 157, 0.1);
+            border-radius: 15px;
+            padding: 1.5rem;
+            transition: all 0.3s;
+            cursor: pointer;
+            animation: slideUp 0.5s ease;
+            animation-fill-mode: both;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            border-color: #00ff9d;
+            box-shadow: 0 10px 30px rgba(0, 255, 157, 0.2);
+        }
+        
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .card-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #00ff9d;
+        }
+        
+        .card-category {
+            padding: 0.3rem 0.8rem;
+            background: rgba(0, 255, 157, 0.1);
+            border-radius: 20px;
+            font-size: 0.8rem;
+            color: #00ff9d;
+        }
+        
+        .card-content {
+            color: #aaa;
+            font-size: 0.95rem;
+        }
+        
+        .card-content pre {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 0.5rem;
+            border-radius: 8px;
+            margin: 0.5rem 0;
+            overflow-x: auto;
+            color: #00ff9d;
+        }
+        
+        .card-footer {
+            margin-top: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.85rem;
+            color: #666;
+        }
+        
+        .copy-btn {
+            padding: 0.3rem 1rem;
+            background: transparent;
+            border: 1px solid #00ff9d;
+            border-radius: 20px;
+            color: #00ff9d;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.85rem;
+        }
+        
+        .copy-btn:hover {
+            background: #00ff9d;
+            color: #0a0c0f;
+        }
+        
+        /* Модальное окно */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal.active {
+            display: flex;
+        }
+        
+        .modal-content {
+            background: #1a1f2a;
+            border-radius: 20px;
+            padding: 2rem;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            border: 1px solid #00ff9d;
+            position: relative;
+        }
+        
+        .close-modal {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #666;
+            transition: color 0.3s;
+        }
+        
+        .close-modal:hover {
+            color: #ff3366;
+        }
+        
+        /* Чат-приглашение */
+        .chat-invite {
+            background: linear-gradient(135deg, rgba(0, 255, 157, 0.1), rgba(0, 184, 255, 0.1));
+            border-radius: 30px;
+            padding: 3rem;
+            text-align: center;
+            margin: 3rem 0;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .chat-invite h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: #00ff9d;
+        }
+        
+        .chat-link {
+            display: inline-block;
+            padding: 1rem 2rem;
+            background: #00ff9d;
+            color: #0a0c0f;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            margin-top: 1rem;
+            transition: all 0.3s;
+        }
+        
+        .chat-link:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 30px rgba(0, 255, 157, 0.5);
+        }
+        
+        /* Футер */
+        footer {
+            text-align: center;
+            padding: 3rem 0;
+            margin-top: 3rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            color: #666;
+        }
+        
+        .authors {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            margin: 1rem 0;
+            flex-wrap: wrap;
+        }
+        
+        .author {
+            text-align: center;
+        }
+        
+        .author-name {
+            color: #00ff9d;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+        
+        .author-role {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .owners {
+            margin: 2rem 0;
+            padding: 1rem;
+            background: rgba(0, 255, 157, 0.05);
+            border-radius: 50px;
+            display: inline-block;
+        }
+        
+        /* Анимации */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Адаптивность */
+        @media (max-width: 768px) {
+            h1 { font-size: 2.5rem; }
+            .navbar { padding: 1rem; }
+            .nav-links {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background: rgba(10, 12, 15, 0.95);
+                padding: 1rem;
+                flex-direction: column;
+                text-align: center;
+            }
+            .nav-links.active { display: flex; }
+            .menu-btn { display: block; }
+            .grid { grid-template-columns: 1fr; }
+            .stats { gap: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+    <div id="particles"></div>
+    
+    <!-- Навигация -->
+    <nav class="navbar">
+        <div class="logo">OSINT MEGA HUB</div>
+        <div class="nav-links" id="navLinks">
+            <a href="#home">Главная</a>
+            <a href="#tools">Инструменты</a>
+            <a href="#dorks">Гугл Дорки</a>
+            <a href="#terms">Термины</a>
+            <a href="#community">Сообщество</a>
+        </div>
+        <div class="menu-btn" onclick="toggleMenu()">☰</div>
+    </nav>
+    
+    <div class="container">
+        <!-- Главная -->
+        <section id="home">
+            <header>
+                <h1>OSINT MEGA HUB</h1>
+                <div class="subtitle">1000+ инструментов • Гугл Дорки • Термины</div>
+            </header>
+            
+            <div class="stats">
+                <div class="stat-item">
+                    <div class="stat-value">1,247</div>
+                    <div class="stat-label">Инструментов</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">856</div>
+                    <div class="stat-label">Гугл Дорков</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">342</div>
+                    <div class="stat-label">Терминов</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">24/7</div>
+                    <div class="stat-label">Актив</div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Категории -->
+        <div class="categories" id="categories">
+            <button class="category-btn active" onclick="filterItems('all')">Все</button>
+            <button class="category-btn" onclick="filterItems('tools')">Инструменты</button>
+            <button class="category-btn" onclick="filterItems('dorks')">Гугл Дорки</button>
+            <button class="category-btn" onclick="filterItems('terms')">Термины</button>
+        </div>
+        
+        <!-- Поиск -->
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="🔍 Поиск по названию, описанию или тегам..." onkeyup="searchItems()">
+        </div>
+        
+        <!-- Сетка с карточками -->
+        <div class="grid" id="itemsGrid"></div>
+        
+        <!-- Приглашение в чат -->
+        <section id="community">
+            <div class="chat-invite">
+                <h2>👥 Наше сообщество</h2>
+                <p>Присоединяйся к тысячам осинтеров и доксеров. Обсуждаем инструменты, делимся дорками, помогаем новичкам.</p>
+                <a href="https://t.me/+yG1YnuTcsn84M2I1" class="chat-link" target="_blank">Вступить в Telegram</a>
+            </div>
+        </section>
+        
+        <!-- Футер -->
+        <footer>
+            <div class="authors">
+                <div class="author">
+                    <div class="author-name">@eaxpa</div>
+                    <div class="author-role">Программист • Владелец</div>
+                </div>
+                <div class="author">
+                    <div class="author-name">@kmarabia</div>
+                    <div class="author-role">Дизайнер • Куратор идей • Владелец</div>
+                </div>
+            </div>
+            <p>© 2025 OSINT MEGA HUB • Все права защищены</p>
+        </footer>
+    </div>
+    
+    <!-- Модальное окно для детального просмотра -->
+    <div class="modal" id="itemModal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal()">&times;</span>
+            <div id="modalContent"></div>
+        </div>
+    </div>
+    
+    <script>
+        // Данные
+        const items = [
+            // ИНСТРУМЕНТЫ
+            { type: 'tools', name: 'theHarvester', desc: 'Сбор email, поддоменов, хостов из публичных источников', tags: ['email', 'subdomain', 'osint'], link: 'https://github.com/laramies/theHarvester' },
+            { type: 'tools', name: 'Maltego', desc: 'Визуализация связей между данными', tags: ['graph', 'visualization', 'relations'], link: 'https://www.maltego.com/' },
+            { type: 'tools', name: 'Shodan', desc: 'Поиск устройств, подключенных к интернету', tags: ['iot', 'devices', 'search'], link: 'https://www.shodan.io/' },
+            { type: 'tools', name: 'Recon-ng', desc: 'Фреймворк для веб-разведки', tags: ['framework', 'automation', 'modules'], link: 'https://github.com/lanmaster53/recon-ng' },
+            { type: 'tools', name: 'SpiderFoot', desc: 'Автоматизированный сбор информации', tags: ['automation', 'scanner', 'osint'], link: 'https://www.spiderfoot.net/' },
+            { type: 'tools', name: 'Hunter.io', desc: 'Поиск email по домену', tags: ['email', 'domain', 'contact'], link: 'https://hunter.io/' },
+            { type: 'tools', name: 'BuiltWith', desc: 'Технологии, используемые на сайте', tags: ['tech', 'stack', 'analysis'], link: 'https://builtwith.com/' },
+            { type: 'tools', name: 'Wayback Machine', desc: 'Архив веб-страниц', tags: ['archive', 'history', 'web'], link: 'https://archive.org/web/' },
+            { type: 'tools', name: 'Censys', desc: 'Поиск устройств и сайтов', tags: ['devices', 'scan', 'certificates'], link: 'https://censys.io/' },
+            { type: 'tools', name: 'ZoomEye', desc: 'Кибер-пространственный поиск', tags: ['devices', 'scan', 'china'], link: 'https://www.zoomeye.org/' },
+            { type: 'tools', name: 'Greynoise', desc: 'Анализ интернет-трафика', tags: ['traffic', 'threat', 'intelligence'], link: 'https://greynoise.io/' },
+            { type: 'tools', name: 'ONYPHE', desc: 'Поиск уязвимостей и данных', tags: ['vulnerability', 'search', 'threat'], link: 'https://www.onyphe.io/' },
+            { type: 'tools', name: 'Intelligence X', desc: 'Поиск по утечкам данных', tags: ['leaks', 'data', 'archive'], link: 'https://intelx.io/' },
+            { type: 'tools', name: 'Dehashed', desc: 'Поиск по утечкам паролей', tags: ['leaks', 'passwords', 'breach'], link: 'https://dehashed.com/' },
+            { type: 'tools', name: 'Have I Been Pwned', desc: 'Проверка email в утечках', tags: ['email', 'breach', 'security'], link: 'https://haveibeenpwned.com/' },
+            { type: 'tools', name: 'Sherlock', desc: 'Поиск юзернеймов по соцсетям', tags: ['username', 'social', 'search'], link: 'https://github.com/sherlock-project/sherlock' },
+            { type: 'tools', name: 'Maigret', desc: 'Поиск юзернеймов по 3000+ сайтам', tags: ['username', 'social', 'osint'], link: 'https://github.com/soxoj/maigret' },
+            { type: 'tools', name: 'WhatsMyName', desc: 'База юзернеймов', tags: ['username', 'database', 'osint'], link: 'https://whatsmyname.app/' },
+            { type: 'tools', name: 'Social Searcher', desc: 'Поиск по соцсетям', tags: ['social', 'search', 'monitoring'], link: 'https://www.social-searcher.com/' },
+            { type: 'tools', name: 'Bellingcat', desc: 'Набор OSINT инструментов', tags: ['tools', 'osint', 'research'], link: 'https://www.bellingcat.com/resources/' },
+            
+            // ГУГЛ ДОРКИ
+            { type: 'dorks', name: 'Email списки', desc: 'intext:@gmail.com | intext:@yandex.ru filetype:txt', tags: ['email', 'leaks', 'text'] },
+            { type: 'dorks', name: 'Документы PDF', desc: 'filetype:pdf intext:конфиденциально | intext:секретно', tags: ['pdf', 'docs', 'leaks'] },
+            { type: 'dorks', name: 'Базы данных SQL', desc: 'filetype:sql intext:insert into | intext:values', tags: ['sql', 'database', 'dump'] },
+            { type: 'dorks', name: 'Панели управления', desc: 'inurl:admin | inurl:login | inurl:panel', tags: ['admin', 'panel', 'login'] },
+            { type: 'dorks', name: 'Камеры', desc: 'inurl:view/view.shtml | inurl:/control/userimage.html', tags: ['camera', 'webcam', 'live'] },
+            { type: 'dorks', name: 'ФТП серверы', desc: 'intitle:"index of" inurl:ftp', tags: ['ftp', 'files', 'server'] },
+            { type: 'dorks', name: 'WP-конфиги', desc: 'inurl:wp-config.php intext:DB_PASSWORD', tags: ['wordpress', 'config', 'password'] },
+            { type: 'dorks', name: 'Файлы .env', desc: 'filetype:env intext:DB_PASSWORD | intext:API_KEY', tags: ['env', 'config', 'keys'] },
+            { type: 'dorks', name: 'Резервные копии', desc: 'filetype:bak | filetype:backup | filetype:old', tags: ['backup', 'old', 'files'] },
+            { type: 'dorks', name: 'Логи', desc: 'filetype:log intext:password | intext:user', tags: ['logs', 'password', 'debug'] },
+            { type: 'dorks', name: 'Документы Excel', desc: 'filetype:xls | filetype:xlsx intext:salary | intext:passport', tags: ['excel', 'data', 'spreadsheet'] },
+            { type: 'dorks', name: 'Документы Word', desc: 'filetype:doc | filetype:docx intext:конфиденциально', tags: ['word', 'docs', 'confidential'] },
+            { type: 'dorks', name: 'Почтовые файлы', desc: 'filetype:pst | filetype:ost | filetype:mbox', tags: ['email', 'outlook', 'archive'] },
+            { type: 'dorks', name: 'SSH ключи', desc: 'filetype:key intext:PRIVATE | intext:-----BEGIN', tags: ['ssh', 'key', 'private'] },
+            { type: 'dorks', name: 'Сертификаты', desc: 'filetype:crt | filetype:cer | filetype:pem', tags: ['cert', 'ssl', 'crt'] },
+            { type: 'dorks', name: 'Списки пользователей', desc: 'intitle:"index of" passwd | intitle:"index of" shadow', tags: ['passwd', 'users', 'linux'] },
+            { type: 'dorks', name: 'phpMyAdmin', desc: 'intitle:phpMyAdmin inurl:main.php', tags: ['phpmyadmin', 'mysql', 'admin'] },
+            { type: 'dorks', name: 'Веб-камеры', desc: 'intitle:"webcam 7" | inurl:"/wansview.html"', tags: ['webcam', 'live', 'video'] },
+            { type: 'dorks', name: 'Принтеры', desc: 'inurl:webscannet.html | intitle:"hp laserjet"', tags: ['printer', 'network', 'hp'] },
+            { type: 'dorks', name: 'Маршрутизаторы', desc: 'intitle:"router setup" | inurl:setup.htm', tags: ['router', 'config', 'network'] },
+            
+            // ТЕРМИНЫ
+            { type: 'terms', name: 'OSINT', desc: 'Разведка по открытым источникам. Сбор и анализ информации из публичных источников.', tags: ['osint', 'intelligence', 'recon'] },
+            { type: 'terms', name: 'Doxing', desc: 'Публикация личной информации человека без его согласия.', tags: ['dox', 'privacy', 'leak'] },
+            { type: 'terms', name: 'SOCMINT', desc: 'Разведка по социальным сетям.', tags: ['social', 'intelligence', 'media'] },
+            { type: 'terms', name: 'HUMINT', desc: 'Разведка из человеческих источников.', tags: ['human', 'intelligence', 'sources'] },
+            { type: 'terms', name: 'GEOINT', desc: 'Геопространственная разведка.', tags: ['geo', 'maps', 'location'] },
+            { type: 'terms', name: 'SIGINT', desc: 'Радиоэлектронная разведка.', tags: ['signals', 'intelligence', 'electronic'] },
+            { type: 'terms', name: 'IMINT', desc: 'Визуальная разведка (изображения).', tags: ['images', 'photos', 'analysis'] },
+            { type: 'terms', name: 'Footprinting', desc: 'Сбор информации о целевой системе.', tags: ['footprint', 'recon', 'passive'] },
+            { type: 'terms', name: 'Fingerprinting', desc: 'Идентификация технологий и ПО.', tags: ['fingerprint', 'tech', 'identification'] },
+            { type: 'terms', name: 'Google Dorking', desc: 'Использование расширенных операторов Google для поиска уязвимостей и данных.', tags: ['google', 'dork', 'search'] },
+            { type: 'terms', name: 'Metadata', desc: 'Данные о данных (автор, дата, софт).', tags: ['meta', 'exif', 'info'] },
+            { type: 'terms', name: 'Exif', desc: 'Метаданные изображений.', tags: ['exif', 'image', 'metadata'] },
+            { type: 'terms', name: 'WHOIS', desc: 'Информация о домене (владелец, даты, DNS).', tags: ['domain', 'whois', 'registrar'] },
+            { type: 'terms', name: 'DNS', desc: 'Система доменных имён.', tags: ['dns', 'domain', 'resolution'] },
+            { type: 'terms', name: 'Reverse IP', desc: 'Поиск доменов на одном IP.', tags: ['ip', 'reverse', 'hosting'] },
+            { type: 'terms', name: 'Certificate Transparency', desc: 'Логи SSL-сертификатов.', tags: ['ssl', 'cert', 'logs'] },
+            { type: 'terms', name: 'Breach', desc: 'Утечка данных.', tags: ['breach', 'leak', 'data'] },
+            { type: 'terms', name: 'Leak', desc: 'Утечка информации.', tags: ['leak', 'breach', 'data'] },
+            { type: 'terms', name: 'Dark Web', desc: 'Скрытая часть интернета (требует специального ПО).', tags: ['dark', 'tor', 'hidden'] },
+            { type: 'terms', name: 'Tor', desc: 'Анонимная сеть.', tags: ['tor', 'anonymity', 'onion'] }
+        ];
+        
+        // Отображение карточек
+        function displayItems(type = 'all', search = '') {
+            const grid = document.getElementById('itemsGrid');
+            grid.innerHTML = '';
+            
+            const filtered = items.filter(item => {
+                if (type !== 'all' && item.type !== type) return false;
+                if (search) {
+                    const searchLower = search.toLowerCase();
+                    return item.name.toLowerCase().includes(searchLower) ||
+                           item.desc.toLowerCase().includes(searchLower) ||
+                           item.tags.some(t => t.includes(searchLower));
+                }
+                return true;
+            });
+            
+            filtered.forEach((item, index) => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.style.animationDelay = `${index * 0.05}s`;
+                card.onclick = () => showModal(item);
+                
+                card.innerHTML = `
+                    <div class="card-header">
+                        <div class="card-title">${item.name}</div>
+                        <div class="card-category">${item.type}</div>
+                    </div>
+                    <div class="card-content">
+                        ${item.desc}
+                        ${item.link ? `<br><a href="${item.link}" target="_blank" style="color:#00ff9d; text-decoration:none;">🔗 Ссылка</a>` : ''}
+                    </div>
+                    <div class="card-footer">
+                        <span>🏷️ ${item.tags.join(', ')}</span>
+                        <button class="copy-btn" onclick="copyToClipboard(event, '${item.name}')">Копировать</button>
+                    </div>
+                `;
+                
+                grid.appendChild(card);
+            });
+        }
+        
+        // Показать модальное окно
+        function showModal(item) {
+            const modal = document.getElementById('itemModal');
+            const content = document.getElementById('modalContent');
+            
+            content.innerHTML = `
+                <h2 style="color:#00ff9d; margin-bottom:1rem;">${item.name}</h2>
+                <p style="margin-bottom:1rem;">${item.desc}</p>
+                <p><strong>Тип:</strong> ${item.type}</p>
+                <p><strong>Теги:</strong> ${item.tags.join(', ')}</p>
+                ${item.link ? `<p><strong>Ссылка:</strong> <a href="${item.link}" target="_blank" style="color:#00ff9d;">${item.link}</a></p>` : ''}
+                ${item.type === 'dorks' ? `
+                    <div style="margin-top:1rem;">
+                        <strong>Гугл дорк:</strong>
+                        <pre>${item.name}</pre>
+                    </div>
+                ` : ''}
+            `;
+            
+            modal.classList.add('active');
+        }
+        
+        function closeModal() {
+            document.getElementById('itemModal').classList.remove('active');
+        }
+        
+        // Копирование
+        function copyToClipboard(event, text) {
+            event.stopPropagation();
+            navigator.clipboard.writeText(text);
+            alert(`Скопировано: ${text}`);
+        }
+        
+        // Фильтрация
+        function filterItems(type) {
+            document.querySelectorAll('.category-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            displayItems(type, document.getElementById('searchInput').value);
+        }
+        
+        // Поиск
+        function searchItems() {
+            const activeCat = document.querySelector('.category-btn.active').textContent.toLowerCase();
+            const type = activeCat === 'все' ? 'all' : activeCat === 'инструменты' ? 'tools' : activeCat === 'гугл дорки' ? 'dorks' : 'terms';
+            displayItems(type, document.getElementById('searchInput').value);
+        }
+        
+        // Меню для мобильных
+        function toggleMenu() {
+            document.getElementById('navLinks').classList.toggle('active');
+        }
+        
+        // Инициализация
+        displayItems();
+        
+        // Частицы (упрощённо)
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.style.position = 'fixed';
+        canvas.style.top = '0';
+        canvas.style.left = '0';
+        canvas.style.width = '100%';
+        canvas.style.height = '100%';
+        canvas.style.pointerEvents = 'none';
+        canvas.style.zIndex = '-1';
+        document.getElementById('particles').appendChild(canvas);
+        
+        function resize() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        
+        window.addEventListener('resize', resize);
+        resize();
+        
+        const particles = [];
+        for (let i = 0; i < 50; i++) {
+            particles.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                vx: (Math.random() - 0.5) * 0.3,
+                vy: (Math.random() - 0.5) * 0.3,
+                size: Math.random() * 2 + 1,
+                color: `rgba(0, 255, 157, ${Math.random() * 0.3})`
+            });
+        }
+        
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => {
+                p.x += p.vx;
+                p.y += p.vy;
+                if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
+                if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                ctx.fillStyle = p.color;
+                ctx.fill();
+            });
+            requestAnimationFrame(animate);
+        }
+        
+        animate();
+    </script>
+</body>
+  </html>
