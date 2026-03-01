@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OSINT HUB | Полный справочник</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #f5f5f7;
+            color: #1a1a1a;
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        /* Музыкальный плеер */
+        .music-player {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 2px solid #00f7ff;
+            border-radius: 60px;
+            padding: 12px 25px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            z-index: 1000;
+            box-shadow: 0 5px 30px rgba(0, 247, 255, 0.3);
+        }
+
+        .music-player button {
+            background: none;
+            border: none;
+            color: #00f7ff;
+            font-size: 24px;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: 0.2s;
+        }
+
+        .music-player button:hover {
+            background: rgba(0, 247, 255, 0.1);
+            transform: scale(1.1);
+        }
+
+        .music-player input[type="range"] {
+            width: 120px;
+            height: 5px;
+            -webkit-appearance: none;
+            background: #ddd;
+            border-radius: 5px;
+        }
+
+        .music-player input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 18px;
+            height: 18px;
+            background: #00f7ff;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 0 10px #00f7ff;
+        }
+
+        .music-player span {
+            color: #333;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        /* Шапка */
+        .header {
+            background: white;
+            border: 2px solid #00f7ff;
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 40px rgba(0, 247, 255, 0.15);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .logo h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #00f7ff, #ff00e5);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 5px;
+        }
+
+        .logo p {
+            color: #666;
+            font-size: 1rem;
+        }
+
+        .telegram-link {
+            background: #00f7ff;
+            color: #000;
+            text-decoration: none;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            transition: 0.2s;
+            box-shadow: 0 5px 20px rgba(0, 247, 255, 0.4);
+        }
+
+        .telegram-link:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 30px rgba(0, 247, 255, 0.6);
+        }
+
+        /* Меню */
+        .menu {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .menu-item {
+            background: white;
+            border: 2px solid #00f7ff;
+            border-radius: 50px;
+            padding: 15px 30px;
+            cursor: pointer;
+            transition: 0.2s;
+            font-weight: 600;
+            color: #333;
+            box-shadow: 0 5px 20px rgba(0, 247, 255, 0.1);
+            flex: 1 1 auto;
+            text-align: center;
+        }
+
+        .menu-item:hover {
+            background: #00f7ff;
+            color: #000;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(0, 247, 255, 0.3);
+        }
+
+        .menu-item.active {
+            background: #00f7ff;
+            color: #000;
+            border-color: #00f7ff;
+        }
+
+        /* Поиск */
+        .search-box {
+            margin-bottom: 30px;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 18px 30px;
+            background: white;
+            border: 2px solid #00f7ff;
+            border-radius: 60px;
+            font-size: 1.1rem;
+            color: #333;
+            box-shadow: 0 5px 20px rgba(0, 247, 255, 0.1);
+            transition: 0.2s;
+        }
+
+        .search-box input:focus {
+            outline: none;
+            box-shadow: 0 5px 30px rgba(0, 247, 255, 0.3);
+            transform: scale(1.02);
+        }
+
+        .search-box input::placeholder {
+            color: #aaa;
+        }
+
+        /* Сетка */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .card {
+            background: white;
+            border: 2px solid #00f7ff;
+            border-radius: 20px;
+            padding: 25px;
+            transition: 0.2s;
+            box-shadow: 0 5px 20px rgba(0, 247, 255, 0.1);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 247, 255, 0.2);
+        }
+
+        .card h2 {
+            color: #00f7ff;
+            font-size: 1.6rem;
+            margin-bottom: 10px;
+            border-bottom: 2px solid #00f7ff;
+            padding-bottom: 8px;
+        }
+
+        .card p {
+            color: #444;
+            margin-bottom: 15px;
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+
+        .card .category {
+            display: inline-block;
+            background: #00f7ff20;
+            color: #00f7ff;
+            padding: 5px 15px;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .card .tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 15px;
+        }
+
+        .card .tag {
+            background: #f0f0f0;
+            color: #666;
+            padding: 4px 12px;
+            border-radius: 30px;
+            font-size: 0.8rem;
+        }
+
+        /* Авторы */
+        footer {
+            text-align: center;
+            padding: 30px;
+            border-top: 2px solid #00f7ff;
+            color: #666;
+        }
+
+        .authors {
+            display: flex;
+            justify-content: center;
+            gap: 50px;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .authors span {
+            color: #00f7ff;
+            font-weight: 700;
+        }
+
+        /* Адаптация */
+        @media (max-width: 700px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+            .header {
+                flex-direction: column;
+                text-align: center;
+            }
+            .music-player {
+                bottom: 15px;
+                right: 15px;
+                padding: 8px 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Музыкальный плеер -->
+    <div class="music-player">
+        <button id="playPause">⏸️</button>
+        <input type="range" id="volume" min="0" max="1" step="0.1" value="0.3">
+        <span>OSINT BEATS</span>
+    </div>
+
+    <!-- Шапка -->
+    <div class="header">
+        <div class="logo">
+            <h1>OSINT HUB</h1>
+            <p>Полный справочник исследователя</p>
+        </div>
+        <a href="https://t.me/+yG1YnuTcsn84M2I1" class="telegram-link" target="_blank">👥 Сообщество</a>
+    </div>
+
+    <!-- Меню -->
+    <div class="menu">
+        <div class="menu-item active" onclick="showCategory('tools')">🔧 Инструменты</div>
+        <div class="menu-item" onclick="showCategory('dorks')">🔍 Гугл Дорки</div>
+        <div class="menu-item" onclick="showCategory('terms')">📚 Термины OSINT</div>
+        <div class="menu-item" onclick="showCategory('hacking')">💻 Хакинг</div>
+        <div class="menu-item" onclick="showCategory('anonymous')">🕵️ Анонимность</div>
+        <div class="menu-item" onclick="showCategory('swat')">🚨 СВАТ</div>
+    </div>
+
+    <!-- Поиск -->
+    <div class="search-box">
+        <input type="text" id="searchInput" placeholder="🔍 Поиск по названию, описанию или тегам..." oninput="searchItems()">
+    </div>
+
+    <!-- Сетка с карточками -->
+    <div class="grid" id="itemsGrid"></div>
+
+    <!-- Авторы -->
+    <footer>
+        <div class="authors">
+            <div>👨‍💻 <span>@eaxpa</span> — программист</div>
+            <div>🎨 <span>@kmarabia</span> — дизайнер</div>
+        </div>
+        <div>© 2025 OSINT HUB — всё для осинта</div>
+    </footer>
+
+    <audio id="bgMusic" loop>
+        <source src="https://cdn.pixabay.com/download/audio/2022/10/17/audio_a7c9a12a6d.mp3?filename=lofi-chill-140111.mp3" type="audio/mpeg">
+    </audio>
+
+    <script>
+        // ========== МУЗЫКА ==========
+        const music = document.getElementById('bgMusic');
+        const playBtn = document.getElementById('playPause');
+        const volume = document.getElementById('volume');
+
+        music.volume = 0.3;
+        
+        // Автовоспроизведение (с обработкой ошибки)
+        const playPromise = music.play();
+        if (playPromise !== undefined) {
+            playPromise.catch(() => {
+                playBtn.textContent = '▶️';
+            });
+        }
+
+        playBtn.onclick = () => {
+            if (music.paused) {
+                music.play();
+                playBtn.textContent = '⏸️';
+            } else {
+                music.pause();
+                playBtn.textContent = '▶️';
+            }
+        };
+
+        volume.oninput = (e) => {
+            music.volume = e.target.value;
+        };
+
+        // ========== БАЗА ЗНАНИЙ ==========
+        const knowledgeBase = {
+            tools: [
+                { name: 'theHarvester', desc: 'Сбор email, поддоменов из публичных источников (поисковые системы, базы данных)', tags: ['email', 'subdomain', 'osint'] },
+                { name: 'Maltego', desc: 'Визуализация связей между данными, построение графов', tags: ['graph', 'visualization', 'relations'] },
+                { name: 'Shodan', desc: 'Поиск устройств, подключенных к интернету (камеры, сервера, роутеры)', tags: ['iot', 'devices', 'search'] },
+                { name: 'Recon-ng', desc: 'Фреймворк для веб-разведки с модулями', tags: ['framework', 'automation', 'modules'] },
+                { name: 'SpiderFoot', desc: 'Автоматизированный сбор информации с 100+ источников', tags: ['automation', 'scanner', 'osint'] },
+                { name: 'Hunter.io', desc: 'Поиск email по домену', tags: ['email', 'domain', 'contact'] },
+                { name: 'BuiltWith', desc: 'Анализ технологий, используемых на сайте', tags: ['tech', 'stack', 'analysis'] },
+                { name: 'Wayback Machine', desc: 'Архив веб-страниц (история изменений)', tags: ['archive', 'history', 'web'] },
+                { name: 'Censys', desc: 'Поиск устройств и анализ сертификатов', tags: ['devices', 'scan', 'certificates'] },
+                { name: 'ZoomEye', desc: 'Кибер-пространственный поиск (аналог Shodan)', tags: ['devices', 'scan', 'china'] },
+                { name: 'Intelligence X', desc: 'Поиск по утечкам данных (архивы, дампы)', tags: ['leaks', 'data', 'archive'] },
+                { name: 'Dehashed', desc: 'Поиск по утечкам паролей и баз данных', tags: ['leaks', 'passwords', 'breach'] },
+                { name: 'Have I Been Pwned', desc: 'Проверка email в утечках', tags: ['email', 'breach', 'security'] },
+                { name: 'Sherlock', desc: 'Поиск юзернеймов по 300+ соцсетям', tags: ['username', 'social', 'search'] },
+                { name: 'Maigret', desc: 'Поиск юзернеймов по 3000+ сайтам', tags: ['username', 'osint', 'social'] },
+                { name: 'Bellingcat', desc: 'Набор инструментов для расследований', tags: ['tools', 'research', 'osint'] }
+            ],
+            dorks: [
+                { name: 'Email списки', desc: 'intext:@gmail.com | intext:@yandex.ru filetype:txt | filetype:xlsx', tags: ['email', 'leaks'] },
+                { name: 'Документы PDF', desc: 'filetype:pdf intext:конфиденциально | intext:секретно | intext:password', tags: ['pdf', 'docs', 'leaks'] },
+                { name: 'Базы данных SQL', desc: 'filetype:sql intext:insert into | intext:values | intext:password', tags: ['sql', 'database', 'dump'] },
+                { name: 'Панели управления', desc: 'inurl:admin | inurl:login | inurl:panel | inurl:dashboard', tags: ['admin', 'panel', 'login'] },
+                { name: 'Камеры', desc: 'inurl:view/view.shtml | inurl:/control/userimage.html | intitle:"webcam"', tags: ['camera', 'webcam', 'live'] },
+                { name: 'ФТП серверы', desc: 'intitle:"index of" inurl:ftp | inurl:ftp://', tags: ['ftp', 'files', 'server'] },
+                { name: 'WP-конфиги', desc: 'inurl:wp-config.php intext:DB_PASSWORD | intext:DB_USER', tags: ['wordpress', 'config', 'password'] },
+                { name: 'Файлы .env', desc: 'filetype:env intext:DB_PASSWORD | intext:API_KEY | intext:SECRET', tags: ['env', 'config', 'keys'] },
+                { name: 'Резервные копии', desc: 'filetype:bak | filetype:backup | filetype:old | filetype:sql.gz', tags: ['backup', 'old', 'files'] },
+                { name: 'Логи', desc: 'filetype:log intext:password | intext:user | intext:error', tags: ['logs', 'debug', 'errors'] },
+                { name: 'SSH ключи', desc: 'filetype:key intext:PRIVATE | intext:-----BEGIN RSA PRIVATE KEY-----', tags: ['ssh', 'key', 'private'] },
+                { name: 'Списки пользователей', desc: 'intitle:"index of" passwd | intitle:"index of" shadow', tags: ['passwd', 'users', 'linux'] },
+                { name: 'phpMyAdmin', desc: 'intitle:phpMyAdmin inurl:main.php | inurl:server_databases.php', tags: ['phpmyadmin', 'mysql', 'admin'] },
+                { name: 'Веб-камеры', desc: 'intitle:"webcam 7" | inurl:"/wansview.html" | intitle:"live view"', tags: ['webcam', 'live', 'video'] },
+                { name: 'Документы Google', desc: 'site:docs.google.com intext:confidential | intext:password', tags: ['google', 'docs', 'leaks'] }
+            ],
+            terms: [
+                { name: 'OSINT', desc: 'Open Source INTelligence — разведка по открытым источникам. Сбор и анализ информации из публичных источников.', tags: ['основы', 'intelligence'] },
+                { name: 'Doxing', desc: 'Публикация личной информации человека без его согласия (ФИО, адрес, телефон, паспорт)', tags: ['доксинг', 'privacy'] },
+                { name: 'SOCMINT', desc: 'Social Media Intelligence — разведка по социальным сетям', tags: ['social', 'media'] },
+                { name: 'HUMINT', desc: 'Human Intelligence — разведка из человеческих источников (интервью, общение)', tags: ['human', 'sources'] },
+                { name: 'GEOINT', desc: 'Geospatial Intelligence — геопространственная разведка (карты, снимки)', tags: ['geo', 'maps'] },
+                { name: 'SIGINT', desc: 'Signals Intelligence — радиоэлектронная разведка (перехват сигналов)', tags: ['signals', 'electronic'] },
+                { name: 'IMINT', desc: 'Imagery Intelligence — визуальная разведка (изображения, фото)', tags: ['images', 'photos'] },
+                { name: 'Footprinting', desc: 'Сбор информации о целевой системе (пассивный анализ)', tags: ['recon', 'passive'] },
+                { name: 'Fingerprinting', desc: 'Идентификация технологий и ПО по цифровым отпечаткам', tags: ['tech', 'identification'] },
+                { name: 'Google Dorking', desc: 'Использование расширенных операторов Google для поиска уязвимостей и данных', tags: ['google', 'search', 'dorks'] }
+            ],
+            hacking: [
+                { name: 'Хакинг', desc: 'Взлом и исследование систем на уязвимости. Делится на этичный (пентест) и неэтичный.', tags: ['hack', 'security'] },
+                { name: 'Этичный хакинг', desc: 'Легальный взлом с разрешения владельца для поиска уязвимостей', tags: ['pentest', 'ethical'] },
+                { name: 'Социальная инженерия', desc: 'Методы манипуляции людьми для получения информации', tags: ['social', 'engineering'] },
+                { name: 'Фишинг', desc: 'Создание поддельных сайтов для кражи паролей и данных', tags: ['phishing', 'fake'] },
+                { name: 'Брутфорс', desc: 'Подбор паролей перебором', tags: ['bruteforce', 'password'] },
+                { name: 'Эксплойт', desc: 'Код, использующий уязвимость для взлома', tags: ['exploit', 'vulnerability'] },
+                { name: 'Шелл', desc: 'Доступ к командной строке взломанной системы', tags: ['shell', 'access'] },
+                { name: 'Бэкдор', desc: 'Скрытый вход в систему для повторного доступа', tags: ['backdoor', 'persistence'] },
+                { name: 'Спуфинг', desc: 'Подмена данных (IP, MAC, email)', tags: ['spoofing', 'fake'] },
+                { name: 'Сниффинг', desc: 'Перехват сетевого трафика', tags: ['sniffing', 'network'] }
+            ],
+            anonymous: [
+                { name: 'Анонимность', desc: 'Сокрытие личности в сети. Использование прокси, VPN, Tor.', tags: ['anon', 'privacy'] },
+                { name: 'Tor', desc: 'The Onion Router — луковая маршрутизация. Многослойное шифрование, сеть добровольных узлов.', tags: ['tor', 'onion', 'hidden'] },
+                { name: 'VPN', desc: 'Virtual Private Network — шифрованный туннель между устройством и сервером.', tags: ['vpn', 'encryption'] },
+                { name: 'Прокси', desc: 'Промежуточный сервер, скрывающий ваш IP', tags: ['proxy', 'ip'] },
+                { name: 'I2P', desc: 'Invisible Internet Project — анонимная сеть внутри сети', tags: ['i2p', 'hidden'] },
+                { name: 'Мост Tor', desc: 'Скрытые входные узлы для обхода блокировок Tor', tags: ['tor', 'bridge'] },
+                { name: 'Браузер Tor', desc: 'Браузер на основе Firefox с предустановленным Tor', tags: ['browser', 'tor'] },
+                { name: 'Tails OS', desc: 'ОС с компьютера, не оставляющая следов', tags: ['os', 'live', 'amnesia'] },
+                { name: 'Whonix', desc: 'ОС с принудительным трафиком через Tor', tags: ['os', 'tor', 'vm'] },
+                { name: 'Анонимные платежи', desc: 'Криптовалюты (Monero, Zcash), наличные', tags: ['money', 'crypto'] }
+            ],
+            swat: [
+                { name: 'СВАТ', desc: 'Специалист по взлому и анализу систем. Инструменты: Metasploit, Nmap, Burp Suite.', tags: ['hacker', 'pentest'] },
+                { name: 'Metasploit', desc: 'Фреймворк для разработки и запуска эксплойтов', tags: ['exploit', 'framework'] },
+                { name: 'Nmap', desc: 'Сканер сети, поиск открытых портов и сервисов', tags: ['scan', 'network', 'ports'] },
+                { name: 'Wireshark', desc: 'Анализатор сетевого трафика (сниффер)', tags: ['sniffing', 'network'] },
+                { name: 'Burp Suite', desc: 'Инструмент для тестирования веб-приложений', tags: ['web', 'proxy', 'scanner'] },
+                { name: 'John the Ripper', desc: 'Взломщик паролей (брутфорс)', tags: ['password', 'bruteforce'] },
+                { name: 'Hashcat', desc: 'Продвинутый взломщик хешей', tags: ['hash', 'password'] },
+                { name: 'Aircrack-ng', desc: 'Взлом Wi-Fi сетей', tags: ['wifi', 'wireless'] },
+                { name: 'SQLmap', desc: 'Автоматический поиск и эксплуатация SQL-инъекций', tags: ['sql', 'injection'] },
+                { name: 'Hydra', desc: 'Брутфорс паролей к сервисам (SSH, FTP, HTTP)', tags: ['bruteforce', 'password'] }
+            ]
+        };
+
+        let currentCategory = 'tools';
+
+        // ========== ОТОБРАЖЕНИЕ ==========
+        function showCategory(category) {
+            currentCategory = category;
+            
+            // Обновляем активный пункт меню
+            document.querySelectorAll('.menu-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Показываем карточки
+            displayItems();
+        }
+
+        function displayItems() {
+            const grid = document.getElementById('itemsGrid');
+            const search = document.getElementById('searchInput').value.toLowerCase();
+            
+            grid.innerHTML = '';
+            
+            const items = knowledgeBase[currentCategory].filter(item => {
+                if (!search) return true;
+                return item.name.toLowerCase().includes(search) ||
+                       item.desc.toLowerCase().includes(search) ||
+                       item.tags.some(t => t.includes(search));
+            });
+
+            items.forEach(item => {
+                grid.innerHTML += `
+                    <div class="card">
+                        <h2>${item.name}</h2>
+                        <div class="category">${currentCategory}</div>
+                        <p>${item.desc}</p>
+                        <div class="tags">
+                            ${item.tags.map(t => `<span class="tag">#${t}</span>`).join('')}
+                        </div>
+                    </div>
+                `;
+            });
+
+            if (items.length === 0) {
+                grid.innerHTML = '<div style="text-align: center; padding: 50px; color: #666;">Ничего не найдено</div>';
+            }
+        }
+
+        function searchItems() {
+            displayItems();
+        }
+
+        // Загружаем первую категорию
+        displayItems();
+    </script>
+</body>
+</html>
