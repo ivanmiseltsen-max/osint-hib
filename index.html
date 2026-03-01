@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OSINT HUB | Чат • Инструменты • Дорки</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            background: #0a0c0f;
+            color: #fff;
+            padding: 15px;
+        }
+        
+        /* Музыка */
+        .music-player {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #1a1f2a;
+            border: 1px solid #00ff9d;
+            border-radius: 50px;
+            padding: 10px 15px;
+            display: flex;
+            gap: 10px;
+            z-index: 1000;
+            backdrop-filter: blur(5px);
+        }
+        
+        .music-player button {
+            background: none;
+            border: none;
+            color: #00ff9d;
+            font-size: 20px;
+            cursor: pointer;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: 0.2s;
+        }
+        
+        .music-player button:hover {
+            background: rgba(0, 255, 157, 0.2);
+        }
+        
+        .music-player input[type="range"] {
+            width: 80px;
+            height: 4px;
+            -webkit-appearance: none;
+            background: #333;
+            border-radius: 2px;
+        }
+        
+        .music-player input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 12px;
+            height: 12px;
+            background: #00ff9d;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        
+        /* Шапка */
+        .header {
+            background: #1a1f2a;
+            border: 1px solid #00ff9d;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .logo {
+            color: #00ff9d;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        
+        .telegram-link {
+            background: #00ff9d;
+            color: #000;
+            text-decoration: none;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            transition: 0.2s;
+        }
+        
+        .telegram-link:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 10px #00ff9d;
+        }
+        
+        /* Вкладки */
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .tab {
+            background: #1a1f2a;
+            border: 1px solid #00ff9d;
+            border-radius: 30px;
+            padding: 8px 20px;
+            cursor: pointer;
+            transition: 0.2s;
+            font-weight: 500;
+        }
+        
+        .tab:hover {
+            background: #00ff9d;
+            color: #000;
+        }
+        
+        .tab.active {
+            background: #00ff9d;
+            color: #000;
+        }
+        
+        /* Поиск */
+        .search-box {
+            margin: 15px 0;
+        }
+        
+        .search-box input {
+            width: 100%;
+            padding: 12px 20px;
+            background: #1a1f2a;
+            border: 1px solid #00ff9d;
+            border-radius: 30px;
+            color: #fff;
+            font-size: 16px;
+        }
+        
+        .search-box input::placeholder {
+            color: #666;
+        }
+        
+        /* Сетка */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 15px;
+            margin: 15px 0;
+        }
+        
+        .card {
+            background: #1a1f2a;
+            border: 1px solid rgba(0, 255, 157, 0.3);
+            border-radius: 10px;
+            padding: 15px;
+            transition: 0.2s;
+        }
+        
+        .card:hover {
+            border-color: #00ff9d;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 255, 157, 0.2);
+        }
+        
+        .card-title {
+            color: #00ff9d;
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .card-category {
+            display: inline-block;
+            padding: 3px 10px;
+            background: rgba(0, 255, 157, 0.1);
+            border-radius: 15px;
+            font-size: 0.8rem;
+            margin-bottom: 10px;
+            color: #00ff9d;
+        }
+        
+        .card-content {
+            color: #aaa;
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+        }
+        
+        .card-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            font-size: 0.8rem;
+            color: #666;
+        }
+        
+        /* Чат */
+        .chat-container {
+            background: #1a1f2a;
+            border: 1px solid #00ff9d;
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 15px;
+            height: 500px;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            background: #0a0c0f;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+        
+        .message {
+            padding: 8px;
+            margin: 5px 0;
+            background: #2a2f3a;
+            border-radius: 5px;
+        }
+        
+        .message-author {
+            color: #00ff9d;
+            font-weight: bold;
+            margin-right: 8px;
+        }
+        
+        .message-time {
+            color: #666;
+            font-size: 0.7rem;
+        }
+        
+        .chat-input {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .chat-input input {
+            flex: 1;
+            padding: 10px;
+            background: #0a0c0f;
+            border: 1px solid #00ff9d;
+            border-radius: 5px;
+            color: #fff;
+        }
+        
+        .chat-input button {
+            padding: 10px 20px;
+            background: #00ff9d;
+            border: none;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        
+        /* Авторы */
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            padding: 15px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            color: #666;
+        }
+        
+        .authors {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 5px;
+        }
+        
+        /* Адаптация */
+        @media (max-width: 600px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .music-player {
+                bottom: 10px;
+                right: 10px;
+                padding: 8px 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Музыка -->
+    <div class="music-player">
+        <button id="playPause">⏸️</button>
+        <input type="range" id="volume" min="0" max="1" step="0.1" value="0.3">
+        <span style="color:#00ff9d">Lofi</span>
+    </div>
+    
+    <!-- Шапка -->
+    <div class="header">
+        <div class="logo">OSINT HUB</div>
+        <a href="https://t.me/+yG1YnuTcsn84M2I1" class="telegram-link" target="_blank">👥 Наш чат</a>
+    </div>
+    
+    <!-- Вкладки -->
+    <div class="tabs">
+        <div class="tab active" onclick="switchTab('chat')">💬 Чат</div>
+        <div class="tab" onclick="switchTab('tools')">🔧 Инструменты</div>
+        <div class="tab" onclick="switchTab('dorks')">🔍 Гугл Дорки</div>
+        <div class="tab" onclick="switchTab('terms')">📚 Термины</div>
+    </div>
+    
+    <!-- Поиск (для инструментов/дорок/терминов) -->
+    <div class="search-box" id="searchBox" style="display: none;">
+        <input type="text" id="searchInput" placeholder="🔍 Поиск..." oninput="searchItems()">
+    </div>
+    
+    <!-- Сетка для инструментов/дорок/терминов -->
+    <div class="grid" id="itemsGrid" style="display: none;"></div>
+    
+    <!-- Чат -->
+    <div id="chatSection">
+        <div class="chat-container">
+            <div class="chat-messages" id="messages"></div>
+            <div class="chat-input">
+                <input type="text" id="userName" placeholder="Ваше имя" value="Аноним">
+                <input type="text" id="messageText" placeholder="Сообщение..." onkeypress="if(event.key==='Enter') sendMessage()">
+                <button onclick="sendMessage()">➤</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Авторы -->
+    <footer>
+        <div class="authors">
+            <div>👨‍💻 @eaxpa</div>
+            <div>🎨 @kmarabia</div>
+        </div>
+        <div>© 2025 OSINT HUB</div>
+    </footer>
+    
+    <audio id="bgMusic" loop>
+        <source src="https://archive.org/download/lofi-study-112191/lofi-study-112191.mp3" type="audio/mpeg">
+    </audio>
+    
+    <script>
+        // ========== SUPABASE ==========
+        const supabase = window.supabase.createClient(
+            'https://vxmqvxukiugrrzevtlgi.supabase.co',
+            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ4bXF2eHVraXVncnJ6ZXZ0bGdpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIzOTUwNDgsImV4cCI6MjA4Nzk3MTA0OH0.cBXbx-luSnd_dRCTSkFl8pvjtsP1NjwGYipF-XK1zBg'
+        )
+        
+        // ========== МУЗЫКА ==========
+        const music = document.getElementById('bgMusic')
+        const playBtn = document.getElementById('playPause')
+        const volume = document.getElementById('volume')
+        
+        music.volume = 0.3
+        music.play().catch(() => playBtn.textContent = '▶️')
+        
+        playBtn.onclick = () => {
+            if (music.paused) {
+                music.play()
+                playBtn.textContent = '⏸️'
+            } else {
+                music.pause()
+                playBtn.textContent = '▶️'
+            }
+        }
+        
+        volume.oninput = (e) => music.volume = e.target.value
+        
+        // ========== ДАННЫЕ ==========
+        const items = {
+            tools: [
+                { name: 'theHarvester', desc: 'Сбор email, поддоменов из публичных источников', tags: ['email', 'osint'] },
+                { name: 'Maltego', desc: 'Визуализация связей между данными', tags: ['graph', 'relations'] },
+                { name: 'Shodan', desc: 'Поиск устройств, подключенных к интернету', tags: ['iot', 'search'] },
+                { name: 'Recon-ng', desc: 'Фреймворк для веб-разведки', tags: ['framework', 'automation'] },
+                { name: 'SpiderFoot', desc: 'Автоматизированный сбор информации', tags: ['automation', 'osint'] },
+                { name: 'Hunter.io', desc: 'Поиск email по домену', tags: ['email', 'domain'] },
+                { name: 'BuiltWith', desc: 'Технологии, используемые на сайте', tags: ['tech', 'analysis'] },
+                { name: 'Wayback Machine', desc: 'Архив веб-страниц', tags: ['archive', 'history'] },
+                { name: 'Censys', desc: 'Поиск устройств и сертификатов', tags: ['devices', 'scan'] },
+                { name: 'ZoomEye', desc: 'Кибер-пространственный поиск', tags: ['devices', 'china'] },
+                { name: 'Intelligence X', desc: 'Поиск по утечкам данных', tags: ['leaks', 'archive'] },
+                { name: 'Dehashed', desc: 'Поиск по утечкам паролей', tags: ['leaks', 'passwords'] },
+                { name: 'Have I Been Pwned', desc: 'Проверка email в утечках', tags: ['email', 'breach'] },
+                { name: 'Sherlock', desc: 'Поиск юзернеймов по соцсетям', tags: ['username', 'social'] },
+                { name: 'Maigret', desc: 'Поиск по 3000+ сайтам', tags: ['username', 'osint'] },
+                { name: 'WhatsMyName', desc: 'База юзернеймов', tags: ['username', 'database'] },
+                { name: 'Bellingcat', desc: 'Набор OSINT инструментов', tags: ['tools', 'research'] }
+            ],
+            dorks: [
+                { name: 'Email списки', desc: 'intext:@gmail.com | intext:@yandex.ru filetype:txt', tags: ['email', 'leaks'] },
+                { name: 'Документы PDF', desc: 'filetype:pdf intext:конфиденциально | intext:секретно', tags: ['pdf', 'docs'] },
+                { name: 'Базы данных SQL', desc: 'filetype:sql intext:insert into | intext:values', tags: ['sql', 'database'] },
+                { name: 'Панели управления', desc: 'inurl:admin | inurl:login | inurl:panel', tags: ['admin', 'panel'] },
+                { name: 'Камеры', desc: 'inurl:view/view.shtml | inurl:/control/userimage.html', tags: ['camera', 'live'] },
+                { name: 'ФТП серверы', desc: 'intitle:"index of" inurl:ftp', tags: ['ftp', 'files'] },
+                { name: 'WP-конфиги', desc: 'inurl:wp-config.php intext:DB_PASSWORD', tags: ['wordpress', 'config'] },
+                { name: 'Файлы .env', desc: 'filetype:env intext:DB_PASSWORD | intext:API_KEY', tags: ['env', 'keys'] },
+                { name: 'Резервные копии', desc: 'filetype:bak | filetype:backup | filetype:old', tags: ['backup', 'old'] },
+                { name: 'Логи', desc: 'filetype:log intext:password | intext:user', tags: ['logs', 'debug'] },
+                { name: 'Документы Excel', desc: 'filetype:xls | filetype:xlsx intext:salary | intext:passport', tags: ['excel', 'data'] },
+                { name: 'SSH ключи', desc: 'filetype:key intext:PRIVATE | intext:-----BEGIN', tags: ['ssh', 'key'] },
+                { name: 'Списки пользователей', desc: 'intitle:"index of" passwd | intitle:"index of" shadow', tags: ['passwd', 'linux'] },
+                { name: 'phpMyAdmin', desc: 'intitle:phpMyAdmin inurl:main.php', tags: ['phpmyadmin', 'mysql'] },
+                { name: 'Веб-камеры', desc: 'intitle:"webcam 7" | inurl:"/wansview.html"', tags: ['webcam', 'live'] }
+            ],
+            terms: [
+                { name: 'OSINT', desc: 'Разведка по открытым источникам', tags: ['intelligence'] },
+                { name: 'Doxing', desc: 'Публикация личной информации человека без его согласия', tags: ['dox', 'privacy'] },
+                { name: 'SOCMINT', desc: 'Разведка по социальным сетям', tags: ['social', 'media'] },
+                { name: 'HUMINT', desc: 'Разведка из человеческих источников', tags: ['human'] },
+                { name: 'GEOINT', desc: 'Геопространственная разведка', tags: ['geo', 'maps'] },
+                { name: 'SIGINT', desc: 'Радиоэлектронная разведка', tags: ['signals'] },
+                { name: 'IMINT', desc: 'Визуальная разведка (изображения)', tags: ['images'] },
+                { name: 'Footprinting', desc: 'Сбор информации о целевой системе', tags: ['recon'] },
+                { name: 'Fingerprinting', desc: 'Идентификация технологий и ПО', tags: ['tech'] },
+                { name: 'Google Dorking', desc: 'Использование расширенных операторов Google', tags: ['google', 'search'] },
+                { name: 'Metadata', desc: 'Данные о данных (автор, дата, софт)', tags: ['meta', 'exif'] },
+                { name: 'Exif', desc: 'Метаданные изображений', tags: ['exif', 'image'] },
+                { name: 'WHOIS', desc: 'Информация о домене', tags: ['domain'] },
+                { name: 'Reverse IP', desc: 'Поиск доменов на одном IP', tags: ['ip'] },
+                { name: 'Certificate Transparency', desc: 'Логи SSL-сертификатов', tags: ['ssl'] },
+                { name: 'Breach', desc: 'Утечка данных', tags: ['leak'] },
+                { name: 'Dark Web', desc: 'Скрытая часть интернета', tags: ['dark'] },
+                { name: 'Tor', desc: 'Анонимная сеть', tags: ['tor'] }
+            ]
+        }
+        
+        // ========== ПЕРЕКЛЮЧЕНИЕ ВКЛАДОК ==========
+        function switchTab(tab) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'))
+            event.target.classList.add('active')
+            
+            const searchBox = document.getElementById('searchBox')
+            const itemsGrid = document.getElementById('itemsGrid')
+            const chatSection = document.getElementById('chatSection')
+            
+            if (tab === 'chat') {
+                searchBox.style.display = 'none'
+                itemsGrid.style.display = 'none'
+                chatSection.style.display = 'block'
+            } else {
+                searchBox.style.display = 'block'
+                itemsGrid.style.display = 'grid'
+                chatSection.style.display = 'none'
+                displayItems(tab)
+            }
+        }
+        
+        function displayItems(type, search = '') {
+            const grid = document.getElementById('itemsGrid')
+            grid.innerHTML = ''
+            
+            const filtered = items[type].filter(item => {
+                if (!search) return true
+                const s = search.toLowerCase()
+                return item.name.toLowerCase().includes(s) ||
+                       item.desc.toLowerCase().includes(s) ||
+                       item.tags.some(t => t.includes(s))
+            })
+            
+            filtered.forEach(item => {
+                grid.innerHTML += `
+                    <div class="card">
+                        <div class="card-title">${item.name}</div>
+                        <div class="card-category">${type}</div>
+                        <div class="card-content">${item.desc}</div>
+                        <div class="card-tags">🏷️ ${item.tags.join(', ')}</div>
+                    </div>
+                `
+            })
+        }
+        
+        function searchItems() {
+            const activeTab = document.querySelector('.tab.active').textContent
+            const type = activeTab === '🔧 Инструменты' ? 'tools' : 
+                        activeTab === '🔍 Гугл Дорки' ? 'dorks' : 'terms'
+            displayItems(type, document.getElementById('searchInput').value)
+        }
+        
+        // ========== ЧАТ ==========
+        async function loadMessages() {
+            const { data } = await supabase
+                .from('messages')
+                .select('*')
+                .order('created_at', { ascending: true })
+                .limit(50)
+            
+            const div = document.getElementById('messages')
+            div.innerHTML = ''
+            data?.forEach(msg => {
+                div.innerHTML += `
+                    <div class="message">
+                        <span class="message-author">${msg.author}</span>
+                        <span class="message-time">${new Date(msg.created_at).toLocaleTimeString()}</span>
+                        <div>${msg.text}</div>
+                    </div>
+                `
+            })
+            div.scrollTop = div.scrollHeight
+        }
+        
+        async function sendMessage() {
+            const author = document.getElementById('userName').value || 'Аноним'
+            const text = document.getElementById('messageText').value.trim()
+            if (!text) return
+            
+            await supabase.from('messages').insert({ author, text })
+            document.getElementById('messageText').value = ''
+        }
+        
+        // Подписка на новые сообщения
+        supabase
+            .channel('messages')
+            .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages' }, 
+                payload => {
+                    const div = document.getElementById('messages')
+                    div.innerHTML += `
+                        <div class="message">
+                            <span class="message-author">${payload.new.author}</span>
+                            <span class="message-time">${new Date(payload.new.created_at).toLocaleTimeString()}</span>
+                            <div>${payload.new.text}</div>
+                        </div>
+                    `
+                    div.scrollTop = div.scrollHeight
+                })
+            .subscribe()
+        
+        // Загрузка
+        loadMessages()
+        displayItems('tools')
+    </script>
+</body>
+  </html>
